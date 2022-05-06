@@ -1,2 +1,2 @@
-# XSJS
-Storage of key JS functions for AquaInsight's Cross Section Tool
+# ROWJS
+Storage of key JS functions for AquaInsight's ROW T3 tools
