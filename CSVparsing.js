@@ -10,14 +10,16 @@ function get_cds_data_from_csv(cb_obj){
     return d
     }
 
-function cds_to_csv(cds,filename){
+function cds_to_csv(cds_data,filename){
     var d = {'fields':[],'data':[]}
-    for (const [k,v] of Object.entries(cds.data)){
+    for (const [k,v] of Object.entries(cds_data)){
         d['fields'].push(k)
         d['data'].push(v)
         }
     //need to transpose data for Papa
      d['data'] = d['data'][0].map((_, colIndex) => d['data'].map(row => row[colIndex]))
+	 //d3 alternative
+	 // d['data'] = d3.transpose(d['data')
     var csv = Papa.unparse(d)
     var csvData = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
     var elem = window.document.createElement('a');
