@@ -35,6 +35,16 @@ function filtobj(x,dict){
     return filt_inds
     }
 
+//innerFilter --> filters an array of objects by the keys and values present in another array of objects
+//differs from filtobj --> where filter obj returns any combo given a dict, this cuts down to only the specific combos given in the filter array 
+function innerfilter(myArray,myFilter){return myArray.filter(function(i){
+    return myFilter.some(function(j){
+        return !Object.keys(j).some(function(prop){
+            return i[prop] != j[prop];
+        });
+    });
+	});}
+	
 //"smart" label callback
 //figure = bokeh figure, srcdata = the datasource labels are to be generated on, x_,y_,lbl_field = field names in the src
 //returns datasource for labelset
@@ -247,4 +257,33 @@ function genGridPts(bnds,Xdim,Ydim){
   var ya = makeArr(bnds.ymin,bnds.ymax,Ydim)
   var cx = d3.cross(ya,xa).map(v=>{return {'x':v[1],'y':v[0]}})
   return cx
+	}
+
+//convert a cds driving polygons/patches to a geojson format
+//does not support holes
+//xf,yf,pf x,y field names, list of properties you want to retrieve with them
+function cds_to_polygeojson(cds_data,xf,yf,pf){
+  var ao = cds_to_objarray(cds_data)
+  var features = []
+  for (var i=0; i<ao.length; i++){
+	//zip up coords
+	var cs = d3.zip(ao[i][xf],ao[i][yf])
+	//filter for desired features
+	var props = Object.keys(ao[i]).filter(
+							x=>pf.includes(x)).reduce(
+					(obj, key) => {obj[key] = ao[i][key];return obj;}, {});
+		var app = {'type':'Feature','id':i,'geometry': {'type': 'Polygon','coordinates': [cs]},'properties':props}
+	features.push(app)
+	}
+	return {'type': 'FeatureCollection','features':features}
+  }
+  
+function download_string(filename, text) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
 	}
