@@ -1,6 +1,9 @@
-function get_cds_data_from_csv(cb_obj){
+function get_cds_data_from_csv(cb_obj,i=0){
+    if (cb_obj.multiple == true){
+        var v = cb_obj.value[i]}
+    else {var v = cb_obj.value}
     //returns {'c':[array_of_cs], ..} from a FileInput widget
-    var p = Papa.parse(atob(cb_obj.value),{encoding: "UTF-8"})
+    var p = Papa.parse(atob(v),{encoding: "UTF-8"})
     var data=p.data
     var header=data[0]
     data = data.slice(1)
